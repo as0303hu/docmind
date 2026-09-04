@@ -39,7 +39,7 @@ class PDFParser:
         )
         return pages
     
-    def get_page_count(self, pdf_bytes:vytes)-> int:
+    def get_page_count(self, pdf_bytes:bytes)-> int:
         """Return the total number of pages in a PDF"""
         
         doc = fitz.open(stream=pdf_bytes,filetype="pdf")
@@ -48,8 +48,8 @@ class PDFParser:
         return count
     
     def _clean_text(self,text:str)-> str:
-        """Clean extracted text vy removing empty lines and excess whitespace."""
+        """Clean extracted text by removing empty lines and excess whitespace."""
         
         lines = text.split("\n")
-        cleaned_line = [lines.strip() for line in lines if line.strip()]
-        return "\n".joined(cleaned_line)
+        cleaned_lines = [line.strip() for line in lines if line.strip()]
+        return "\n".join(cleaned_lines)
