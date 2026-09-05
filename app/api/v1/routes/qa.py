@@ -16,5 +16,5 @@ async def ask_quesiton(
     return qa_service.ask(
         db=db,
         question=request.question,
-        topk=request.top_k
+        topk=request.top_k,
     )
