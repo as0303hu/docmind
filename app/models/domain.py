@@ -11,35 +11,35 @@ from app.db.base import Base
 
 class Document(Base):
     __tablename__ = "documents"
-    id: Mapped(uuid,UUID)= mapped_column(
-        UUID(as_uuid=True),primary_key=True, default=uuid.uuid4
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    filename:Mapped[str] = mapped_column(String(500),nullable=False)
-    file_size:Mapped[int] = mapped_column(Integer,nullable=False)
-    page_count:Mapped[int] = mapped_column(Integer,nullable=False)
-    chunk_count:Mapped[int] = mapped_column(Integer,default=0)
-    create_at: Mapped[datetime]=mapped_column(
+    filename: Mapped[str] = mapped_column(String(500), nullable=False)
+    file_size: Mapped[int] = mapped_column(Integer, nullable=False)
+    page_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    chunk_count: Mapped[int] = mapped_column(Integer, default=0)
+    create_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    chunks:Mapped[list["chunks"]] = relationship(
-        "Chunk",back_populates="document",cascade="all, delete-orphan"
+    chunks: Mapped[list["Chunk"]] = relationship(
+        "Chunk", back_populates="document", cascade="all, delete-orphan"
     )
     
 class Chunk(Base):
-    __tablename__="chunks"
-    
-    id:Mapped[uuid.UUID] = mapped_column(
+    __tablename__ = "chunks"
+
+    id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     document_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("documents.id",ondelete="CASCADE"),
-        nullable=False
+        ForeignKey("documents.id", ondelete="CASCADE"),
+        nullable=False,
     )
-    content: Mapped[str] = mapped_column(Text,nullable=False)
-    page_number: Mapped[int]= mapped_column(Integer,nullable=False)
-    Chunk_index: Mapped[int]= mapped_column(Integer,nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    page_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    chunk_index: Mapped[int] = mapped_column(Integer, nullable=False)
     embedding = mapped_column(Vector(settings.embedding_dimension))
-    
-    document:Mapped["Document"] = relationship("Document",back_populates="chunks")
+
+    document: Mapped["Document"] = relationship("Document", back_populates="chunks")
     

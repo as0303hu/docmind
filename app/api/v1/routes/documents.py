@@ -16,7 +16,7 @@ from app.models.schemas import(
     DocumentUploadResponse
 )
 
-router = APIRouter(prefix="/documents",tag=["documents"])
+router = APIRouter(prefix="/documents", tags=["documents"])
 
 @router.post("/upload",response_model=DocumentUploadResponse)
 async def upload_document(

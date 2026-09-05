@@ -4,7 +4,7 @@ from sqlalchemy import text
 
 from app.api.v1.routes import documents, health, qa
 from app.core.config import settings
-from app.core.openai import setup_logging
+from app.core.logging import setup_logging
 from app.db.base import Base
 from app.db.session import engine
 from app.middleware.correlation import CorrelationIdMiddleware
