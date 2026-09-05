@@ -7,6 +7,8 @@ from app.core.config import settings
 from app.core.openai import setup_logging
 from app.db.base import Base
 from app.db.session import engine
+from app.middleware.correlation import CorrelationIdMiddleware
+
 
 
 @asynccontextmanager
@@ -24,6 +26,7 @@ app = FastAPI(
     version="0.1.0"
 )
 prefix = "/app/v1"
+app.add_middleware(CorrelationIdMiddleware)
 
 app.include_router(health.router,prefix=prefix)
 app.include_router(documents.router,prefix=prefix)
