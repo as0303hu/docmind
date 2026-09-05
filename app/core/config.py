@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Literal
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env",extra="ignore")
@@ -11,7 +12,13 @@ class Settings(BaseSettings):
     database_url:str =""
     
     #openAI
+    llm_provider: Literal["openai", "azure"] = "openai"
     openai_api_key:str=""
+    azure_openai_api_key:str = ""
+    azure_openapi_endpoint: str =""
+    azure_openai_api_version: str = "2024-10-21"
+    azure_embedding_deployment:str =""
+    azure_llm_deployment:str =""
     embedding_model:str = "text-embedding-3-small"
     embedding_dimension:int = 1536
     llm_model:str = "gpt-4o-mini"

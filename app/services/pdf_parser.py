@@ -1,7 +1,8 @@
-import logging
-import fitz
 
-logger = logging.getLogger(__name__)
+import fitz
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 class PDFPage:
     """Reperesents a single psge of extracted text from s PDF"""
@@ -33,9 +34,9 @@ class PDFParser:
         doc.close()
         
         logger.info(
-            "PDF parsed: total_page = %d, pages_with_text=%d",
-            len(doc) if not doc.is_closed else page_num+1,
-            len(pages)
+            "PDF parsed",
+            total_pages = len(doc) if not doc.is_closed else page_num+1,
+            pages_with_text = len(pages),
         )
         return pages
     

@@ -1,10 +1,11 @@
-import logging
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from app.core.config import settings
 from app.services.pdf_parser import PDFPage
+from app.core.logging import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 class TextChunk:
     def __init__(self,content:str,page_number:int,chunk_index:int):
@@ -38,8 +39,8 @@ class TextChunker:
                 chunk_index +=1
         
         logger.info(
-            "text_chunked: total_pages =%d, total_chunks =%d",
-            len(pages),
-            len(chunks)
+            "text_chunked",
+            total_pages = len(pages),
+            total_chunks = len(chunks)
         )
         return chunks
