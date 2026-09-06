@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import Depends, FastAPI
+from fastapi import  FastAPI
 from sqlalchemy import text
 
 from app.api.v1.routes import documents, health, qa
@@ -12,7 +12,7 @@ from app.middleware.correlation import CorrelationIdMiddleware
 
 
 @asynccontextmanager
-async def lifespan(app:FastAPI):
+async def lifespan(app: FastAPI):
     setup_logging(settings.log_level)
     async with engine.begin() as conn:
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
@@ -26,7 +26,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
-prefix = "/app/v1"
+prefix = "/api/v1"
 app.add_middleware(CorrelationIdMiddleware)
 
 app.include_router(health.router,prefix=prefix)
