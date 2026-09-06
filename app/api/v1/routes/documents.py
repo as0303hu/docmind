@@ -16,6 +16,10 @@ from app.models.schemas import(
     DocumentUploadResponse
 )
 
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 router = APIRouter(prefix="/documents", tags=["documents"])
 
 @router.post("/upload",response_model=DocumentUploadResponse)
@@ -35,12 +39,12 @@ async def upload_document(
     
     pages = pdf_parser.extract_pages(pdf_bytes)
     if not pages:
-        raise HTTPException(status_code=400, detail="Could not extract text from PDF")
-    
+        logger.warning("upload_no_text", filename=file.filename)
+
     page_count = pdf_parser.get_page_count(pdf_bytes)
-    chunks = chunker.chunk_pages(pages)
+    chunks = chunker.chunk_pages(pages) if pages else []
     texts = [chunk.content for chunk in chunks]
-    embeddings = await embedding_service.generate_embeddings_batch(texts)
+    embeddings = await embedding_service.generate_embeddings_batch(texts) if texts else []
     
     await vector_store.ensure_pgvector_extension(db)
     document = await vector_store.store_document(

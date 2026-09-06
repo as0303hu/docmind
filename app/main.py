@@ -23,7 +23,8 @@ async def lifespan(app:FastAPI):
 app = FastAPI(
     title="Docmind",
     description="Ask questions about your Pdf documentd using RAG",
-    version="0.1.0"
+    version="0.1.0",
+    lifespan=lifespan,
 )
 prefix = "/app/v1"
 app.add_middleware(CorrelationIdMiddleware)

@@ -31,28 +31,31 @@ class VectorStore:
             chunk_count = len(chunks),
         )
         
-        db.add(Document)
+        db.add(document)
         await db.flush()
-        
-        for chunk, embedding in zip(chunks,embeddings):
+
+        # Add chunks (if any) and commit once
+        for chunk, embedding in zip(chunks, embeddings):
             db_chunk = Chunk(
-                document_id = document.id,
-                content =chunk.content,
-                page_number = chunk.page_number,
-                chunk_index = chunk.chunk_index,
-                embedding = embedding,
+                document_id=document.id,
+                content=chunk.content,
+                page_number=chunk.page_number,
+                chunk_index=chunk.chunk_index,
+                embedding=embedding,
             )
             db.add(db_chunk)
-            await db.commit()
-            await db.refresh(document)
-            
-            logger.info(
-                "document_stored",
-                document_id = str(document.id),
-                filename =filename,
-                chunk_count = len(chunks),
-            )
-            return document
+
+        await db.commit()
+        await db.refresh(document)
+
+        logger.info(
+            "document_stored",
+            document_id=str(document.id),
+            filename=filename,
+            chunk_count=len(chunks),
+        )
+
+        return document
     
     async def similarity_search(
         self, 
@@ -70,7 +73,7 @@ class VectorStore:
         return [(chunk,1-dist) for chunk,dist in rows]
     
     async def get_all_documents(self, db:AsyncSession)-> list[Document]:
-        stmt = select(Document).order_by(Document.create_at.desc())
+        stmt = select(Document).order_by(Document.created_at.desc())
         result = await db.execute(stmt)
         return list(result.scalars().all())
     
@@ -91,7 +94,7 @@ class VectorStore:
         await db.commit()
         logger.info("document_deleted", document_id=str(document_id))
         return True
-    async def get_total_chunk_count(slef,db:AsyncSession)-> int:
+    async def get_total_chunk_count(self,db:AsyncSession)-> int:
         stmt = select(func.count(Chunk.id))
         result = await db.execute(stmt)
         return result.scalar_one()

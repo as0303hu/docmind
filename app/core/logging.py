@@ -19,8 +19,8 @@ def setup_logging(log_level:str ="INFO")-> None:
         cache_logger_on_first_use=True,
     )
     logging.basicConfig(
-        format="%(messages)s",
-        level=getattr(logging,log_level.upper()),
+        format="%(message)s",
+        level=getattr(logging, log_level.upper()),
     )
 
 def get_logger(name:str)-> structlog.stdlib.BoundLogger:

@@ -13,8 +13,8 @@ async def ask_quesiton(
     db:AsyncSession = Depends(get_db),
     qa_service = Depends(get_qa_service),
 ):
-    return qa_service.ask(
+    return await qa_service.ask(
         db=db,
         question=request.question,
-        topk=request.top_k,
+        top_k=request.top_k,
     )

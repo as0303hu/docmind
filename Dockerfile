@@ -18,6 +18,9 @@ RUN python -m venv /opt/venv \
 # Stage 2: Runtime image
 FROM python:3.12-slim AS runtime
 
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/list/*
+
 RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser
 
 WORKDIR /app

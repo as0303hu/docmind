@@ -26,3 +26,10 @@ def embedding_model_name()->str:
             raise ValueError("AZURE_EMBEDDING_DEPLOYMENT is required when LLM_PROVEDR=azure")
         return settings.azure_embedding_deployment
     return settings.embedding_model
+
+def chat_model_name()->str:
+    if settings.llm_provider =="azure":
+        if not settings.azure_llm_deployment:
+            raise ValueError("AZURE_LLM_DEPLOYMENT is required when LLM_PROVIDER=azure")
+        return settings.azure_llm_deployment
+    return settings.llm_model

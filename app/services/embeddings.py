@@ -1,5 +1,6 @@
 from app.core.logging import get_logger
 from app.core.openai import create_openai_client, embedding_model_name
+from app.core.config import settings
 
 logger = get_logger(__name__)
 
@@ -8,11 +9,13 @@ client = create_openai_client()
 class EmbeddingService:
     def __init__(self):
         self.model = embedding_model_name()
+        self.dimension = settings.embedding_dimension
         
     async def genrate_embedding(self,text:str)-> list[float]:
         response = await client.embeddings.create(
             model=self.model,
             input=text,
+            dimensions=self.dimension
         )
         return response.data[0].embedding
     async def generate_embeddings_batch(
@@ -25,7 +28,8 @@ class EmbeddingService:
             batch = texts[i:i+batch_size]
             response = await client.embeddings.create(
                 model=self.model,
-                input=batch
+                input=batch,
+                dimensions=self.dimension
             )
             batch_embeddings = [item.embedding for item in response.data]
             all_embeddings.extend(batch_embeddings)

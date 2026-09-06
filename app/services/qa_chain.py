@@ -1,15 +1,15 @@
-from openai import AsyncOpenAI
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.logging import get_logger
+from app.core.openai import chat_model_name,create_openai_client
 from app.models.schemas import AnswerResponse, SourceChunk
 from app.services.embeddings import EmbeddingService
 from app.services.vector_store import VectorStore
 
 logger = get_logger(__name__)
 
-client = AsyncOpenAI(api_key=settings.openai_api_key)
+client = create_openai_client()
 
 SYSTEM_PROMPT = """ You are a helpful assistant that answers questions based on the provided context from PDF documents.
 RUles:
@@ -57,8 +57,8 @@ class QAService:
             context = context, question = question
         )
         response = await client.chat.completions.create(
-            model=settings.llm_model,
-            temperature= settings.llm_temprature,
+            model=chat_model_name(),
+            temperature= settings.llm_temperature,
             max_tokens=settings.llm_max_tokens,
             messages=[
                 {"role":"system","content":SYSTEM_PROMPT},
@@ -70,7 +70,7 @@ class QAService:
             SourceChunk(
                 content= chunk.content[:300],
                 page_number=chunk.page_number,
-                chunk_index=chunk.Chunk_index,
+                chunk_index=chunk.chunk_index,
                 similarity_score=round(score,4),
             )
             for chunk,score in search_results

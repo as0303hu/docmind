@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     embedding_model:str = "text-embedding-3-small"
     embedding_dimension:int = 1536
     llm_model:str = "gpt-4o-mini"
-    llm_temprature:float=0.0
+    llm_temperature:float=0.0
     llm_max_tokens:int = 1024
     
     
