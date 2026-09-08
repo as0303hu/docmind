@@ -14,9 +14,6 @@ from app.middleware.correlation import CorrelationIdMiddleware
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     setup_logging(settings.log_level)
-    async with engine.begin() as conn:
-        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
-        await conn.run_sync(Base.metadata.create_all)
     yield
     await engine.dispose()
     

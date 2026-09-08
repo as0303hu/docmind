@@ -38,6 +38,7 @@ QUERY FLOW
 ```
 
 **Upload Flow:** PDF -> Extract text (PyMuPDF) -> Split into chunks (LangChain) -> Generate embeddings (OpenAI) -> Store in PostgreSQL (pgvector)
+
 **Query Flow:** Question -> PII redaction -> Generate embedding -> Vector similarity search -> Pass top-K chunks to LLM -> Return answer with source references
 
 ## Features
