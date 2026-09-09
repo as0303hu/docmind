@@ -4,8 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.api.v1.dependencies import get_qa_service
 from app.models.schemas import AnswerResponse,QuestionRequest
+from app.middleware.auth import require_api_key
 
-router =APIRouter(prefix="/qa",tags=["question-answering"])
+router =APIRouter(prefix="/qa",tags=["question-answering"],
+                  dependencies=[Depends(require_api_key)])
 
 @router.post("/ask",response_model=AnswerResponse)
 async def ask_quesiton(

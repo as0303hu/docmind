@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     llm_temperature:float=0.0
     llm_max_tokens:int = 1024
     
+    api_key:str=""
+    require_auth:bool=False
+    cors_origins:list[str]=["http://localhost:3000","http://localhost:5173"]
+    
     
     # Chunking
     chunk_size:int=1000

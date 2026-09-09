@@ -1,6 +1,8 @@
 import uuid
 from fastapi import APIRouter, Depends,HTTPException,UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.exceptions import NotFoundError, ValidationError
+from app.middleware.auth import require_api_key
 
 from app.db.session import get_db
 from app.api.v1.dependencies import (
@@ -20,7 +22,9 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/documents", tags=["documents"])
+router = APIRouter(prefix="/documents",
+                   tags=["documents"],
+                   dependencies=[Depends(require_api_key)])
 
 @router.post("/upload",response_model=DocumentUploadResponse)
 async def upload_document(
@@ -32,7 +36,7 @@ async def upload_document(
     vector_store =Depends(get_vector_store),
 ):
     if not file.filename or not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400,detail="Only PDF files are supported")
+        raise ValidationError(detail="Only PDF files are supported")
     
     pdf_bytes = await file.read()
     file_size = len(pdf_bytes)
@@ -77,7 +81,7 @@ async def get_document(
 ):
     document = await vector_store.get_document_by_id(db,document_id)
     if not document:
-        raise HTTPException(status_code=404,detail="Document not found")
+        raise NotFoundError(detail="Document not found")
     return DocumentUploadResponse.model_validate(document)
 
 @router.delete("/{document_id}")
@@ -88,7 +92,7 @@ async def delete_document(
 ):
     deleted = await vector_store.delete_document(db,document_id)
     if not deleted:
-        raise HTTPException(status_code=404,detail ="Document not found")
+        raise NotFoundError(detail ="Document not found")
     return {"detail":"Document Deleted Succesfully"}
     
     
