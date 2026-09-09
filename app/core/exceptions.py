@@ -4,11 +4,13 @@ from typing import Any
 
 from pydantic import BaseModel
 
+
 class APIErrorPayload(BaseModel):
-    status:int
-    error:str ="error"
-    detail:str=""
-    technical_details: list |dict | str | None = None
+    status: int
+    error: str = "error"
+    detail: str = ""
+    technical_details: list | dict | str | None = None
+
 
 class APIError(Exception):
     def __init__(  # Fixed: double underscores
@@ -25,19 +27,25 @@ class APIError(Exception):
             technical_details=technical_details,
         )
         super().__init__(detail)
-        
+
+
 class NotFoundError(APIError):
-    def __init__(self, detail: str = "Resource not found", **kwargs: Any) -> None: # Fixed: **kwargs
+    def __init__(
+        self, detail: str = "Resource not found", **kwargs: Any
+    ) -> None:  # Fixed: **kwargs
         super().__init__(status=404, error="not_found", detail=detail, **kwargs)
+
 
 class ValidationError(APIError):
     def __init__(self, detail: str = "Validation failed", **kwargs: Any) -> None:
         super().__init__(status=422, error="validation_error", detail=detail, **kwargs)
 
+
 class ServiceUnavailableError(APIError):
-    def __init__(self,detail:str = "Service temporarily unavailable", **kwargs:Any)->None:
-        super().__init__(status=503, error="service_unavailable", detail=detail,**kwargs)
+    def __init__(self, detail: str = "Service temporarily unavailable", **kwargs: Any) -> None:
+        super().__init__(status=503, error="service_unavailable", detail=detail, **kwargs)
+
 
 class AuthenticationError(APIError):
-    def __init__(self, detail:str = "Authentication required", **kwargs:Any) -> None:
+    def __init__(self, detail: str = "Authentication required", **kwargs: Any) -> None:
         super().__init__(status=401, error="auth_error", detail=detail, **kwargs)

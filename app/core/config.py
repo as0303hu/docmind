@@ -1,41 +1,42 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env",extra="ignore")
-    
-    #App
-    app_env:str ="development"
-    log_level:str = "INFO"
-    
-    #Database
-    database_url:str =""
-    
-    #openAI
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    # App
+    app_env: str = "development"
+    log_level: str = "INFO"
+
+    # Database
+    database_url: str = ""
+
+    # openAI
     llm_provider: Literal["openai", "azure"] = "openai"
-    openai_api_key:str=""
-    azure_openai_api_key:str = ""
-    azure_openapi_endpoint: str =""
+    openai_api_key: str = ""
+    azure_openai_api_key: str = ""
+    azure_openapi_endpoint: str = ""
     azure_openai_api_version: str = "2024-10-21"
-    azure_embedding_deployment:str =""
-    azure_llm_deployment:str =""
-    embedding_model:str = "text-embedding-3-small"
-    embedding_dimension:int = 1536
-    llm_model:str = "gpt-4o-mini"
-    llm_temperature:float=0.0
-    llm_max_tokens:int = 1024
-    
-    api_key:str=""
-    require_auth:bool=False
-    cors_origins:list[str]=["http://localhost:3000","http://localhost:5173"]
-    
-    
+    azure_embedding_deployment: str = ""
+    azure_llm_deployment: str = ""
+    embedding_model: str = "text-embedding-3-small"
+    embedding_dimension: int = 1536
+    llm_model: str = "gpt-4o-mini"
+    llm_temperature: float = 0.0
+    llm_max_tokens: int = 1024
+
+    api_key: str = ""
+    require_auth: bool = False
+    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:5173"]
+
     # Chunking
-    chunk_size:int=1000
-    chunk_overlap:int=200
-    
-    
+    chunk_size: int = 1000
+    chunk_overlap: int = 200
+
     # Search
-    top_k:int=5
-    
-settings=Settings()
+    top_k: int = 5
+
+
+settings = Settings()

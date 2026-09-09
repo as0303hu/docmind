@@ -1,9 +1,11 @@
 import logging
+
 import structlog
 
-def setup_logging(log_level:str ="INFO")-> None:
+
+def setup_logging(log_level: str = "INFO") -> None:
     structlog.configure(
-        processors =[
+        processors=[
             structlog.contextvars.merge_contextvars,
             structlog.stdlib.filter_by_level,
             structlog.stdlib.add_logger_name,
@@ -23,6 +25,6 @@ def setup_logging(log_level:str ="INFO")-> None:
         level=getattr(logging, log_level.upper()),
     )
 
-def get_logger(name:str)-> structlog.stdlib.BoundLogger:
-    return structlog.get_logger(name)
 
+def get_logger(name: str) -> structlog.stdlib.BoundLogger:
+    return structlog.get_logger(name)

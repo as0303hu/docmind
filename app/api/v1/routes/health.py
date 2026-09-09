@@ -6,7 +6,8 @@ from app.models.schemas import HealthResponse
 
 router = APIRouter()
 
-@router.get("/health",response_model=HealthResponse)
+
+@router.get("/health", response_model=HealthResponse)
 async def health_check():
     db_status = "Helathy"
     try:
@@ -14,10 +15,5 @@ async def health_check():
             await session.execute(text("SELECT 1"))
     except Exception:
         db_status = "unhealthy"
-    
-    return HealthResponse(
-        status="healthy",
-        database=db_status
-    )
 
-    
+    return HealthResponse(status="healthy", database=db_status)
