@@ -1,3 +1,4 @@
+"""PDF parsing service using PyMuPDF (fitz)."""
 import fitz
 
 from app.core.logging import get_logger
@@ -12,27 +13,20 @@ class PDFPage:
         self.page_number = page_number
         self.text = text
 
-    def __repr__(self):
-        preview = self.text[:50] + "..." if len(self.text) > 50 else self.text
-        return f"PDFPage(page={self.page_number}, text='{preview}')"
-
 
 class PDFParser:
-    """Extractd text from PDF files using PyMuPDF (fitz)."""
+    """Extractd text content from PDF files page by page."""
 
     def extract_pages(self, pdf_bytes: bytes) -> list[PDFPage]:
-        """Extract text from each page of a pdf"""
-        try:
-            doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-        except Exception as e:
-            raise RuntimeError(f"Failed to open PDF: {e}") from e
+        """Parse a PDF and return pages that contain text."""
+        doc = fitz.open(stream=pdf_bytes, filetype="pfd")
+        pages =[]
+        total_pages = len(doc)
 
-        pages: list[PDFPage] = []
-
-        for page_num in range(len(doc)):
+        for page_num in range(total_pages):
             page = doc.load_page(page_num)
-            raw_text = page.get_text("text")
-            cleaned_text = self._clean_text(raw_text)
+            text = page.get_text("text")
+            cleaned_text = self._clean_text(text)
             if cleaned_text.strip():
                 pages.append(PDFPage(page_number=page_num + 1, text=cleaned_text))
         doc.close()
@@ -56,5 +50,9 @@ class PDFParser:
         """Clean extracted text by removing empty lines and excess whitespace."""
 
         lines = text.split("\n")
-        cleaned_lines = [line.strip() for line in lines if line.strip()]
+        cleaned_lines =[]
+        for line in lines:
+            stripped = line.strip()
+            if stripped:
+                cleaned_lines.append(stripped)
         return "\n".join(cleaned_lines)
